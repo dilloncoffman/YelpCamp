@@ -1,0 +1,14 @@
+<% include partials/header %>
+
+<h1>Create a new campground</h1>
+
+<form action="/campgrounds" method="POST">
+    <!-- Name attribute used inside of route to grab the data from the req.body -->
+    <input type="text" name="name" placeholder="Name">
+    <input type="text" name="image" placeholder="Image url">
+    <button>Submit</button>
+</form>
+
+<a href="/campgrounds">Go Back</a>
+
+<% include partials/footer %>
