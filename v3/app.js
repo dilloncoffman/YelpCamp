@@ -2,30 +2,17 @@ var express     = require('express'),
     app         = express(),
     bodyParser  = require('body-parser'),
     mongoose    = require('mongoose'),
-    Campground  = require('./models/campground');
+    Campground  = require('./models/campground'),
+    seedDB      = require('./seeds');
     
+
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/yelp_camp", {useMongoClient: true}); //creates YelpCamp db inside of MongoDB
+mongoose.connect("mongodb://localhost/yelp_camp_v3", {useMongoClient: true}); //creates YelpCamp db inside of MongoDB
 app.use(bodyParser.urlencoded({extended: true})); 
 app.set("view engine", "ejs");
+seedDB();
 
 // SCHEMA SETUP
-
-
-// Campground.create(
-//     {
-//         name: "Mountain Goat's Rest", 
-//         image: "https://farm6.staticflickr.com/5472/9172530058_c22dab3b18.jpg",
-//         description: "This is a huge mountain, with a lot of goats. No dogs allowed. Beware of goats."
-//     },
-//         function(err, campground){
-//             if(err) {
-//                 console.log(err);
-//             } else {
-//                 console.log("NEWLY CREATED CAMPGROUND: ");
-//                 console.log(campground);
-//             }
-//         });
 
 app.get("/", function(req, res){
     res.render("landing");
@@ -77,10 +64,12 @@ app.listen(process.env.PORT, process.env.IP, function(){
 //SHOW - shows more info about one campground
 app.get("/campgrounds/:id", function(req, res){
     //find campground with provided id
-    Campground.findById(req.params.id, function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if(err){
             console.log(err);
         } else {
+            console.log(foundCampground);
+            //render show template with that campground
             res.render("show", {campground: foundCampground});
         }
     });
